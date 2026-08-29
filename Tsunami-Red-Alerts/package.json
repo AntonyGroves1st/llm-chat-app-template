@@ -1,0 +1,14 @@
+{
+	"name": "tsunami-red-alerts",
+	"private": true,
+	"version": "1.0.0",
+	"description": "Standalone Tsunami Red Alerts app with live feeds and an Android APK builder",
+	"type": "module",
+	"scripts": {
+		"start": "node server/index.mjs",
+		"dev": "node server/index.mjs",
+		"apk": "bash scripts/build-apk.sh",
+		"apk:release": "bash scripts/build-apk.sh --release",
+		"apk:sync": "bash scripts/sync-android-assets.sh"
+	}
+}

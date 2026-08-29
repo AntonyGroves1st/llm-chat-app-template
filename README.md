@@ -1,5 +1,7 @@
 # Tsunami Red Alerts
 
+**Use the new standalone app folder:** [`Tsunami-Red-Alerts/`](Tsunami-Red-Alerts/). Copy that folder to `G:\race1\Tsunami-Red-Alerts` and run `Start-App.bat` or `Build-Tsunami-APK.bat`.
+
 Live tsunami warning dashboard on Cloudflare Workers. The app watches official NWS, USGS, and tsunami.gov feeds, opens a full red-alert screen when a warning is in effect, and keeps a closeable tab so you can dismiss the overlay without losing the alert.
 
 ## Features
