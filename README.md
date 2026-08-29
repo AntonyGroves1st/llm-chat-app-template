@@ -49,11 +49,13 @@ Full APK builder (downloads the Android SDK if needed):
 npm run apk
 ```
 
-On Windows:
+On Windows, use your JDK 21 folder (`Java\latest\jdk-21`, the one with `bin\javac.exe`) and run:
 
 ```bat
 Build-Tsunami-APK.bat
 ```
+
+Do not point Java at the nested `jdk-25.0.2.10-hotspot` folder. The builder prefers JDK 21 automatically.
 
 The APK is written to `artifacts/TsunamiRedAlerts-debug.apk`. See [ANDROID.md](ANDROID.md) for Android Studio, signing, and release builds.
 
