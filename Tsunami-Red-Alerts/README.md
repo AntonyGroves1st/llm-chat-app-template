@@ -1,8 +1,10 @@
 # Tsunami Red Alerts
 
-Complete standalone app. Copy this whole folder to:
+Complete standalone app. Copy this whole folder to the **root of G:**
 
-`G:\race1\Tsunami-Red-Alerts`
+`G:\Tsunami-Red-Alerts`
+
+Not inside `race1`. You should see `G:\Tsunami-Red-Alerts\Start-App.bat`.
 
 It does not need Cloudflare or the old chat-template repo.
 
