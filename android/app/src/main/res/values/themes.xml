@@ -1,0 +1,8 @@
+<resources>
+	<style name="Theme.TsunamiRedAlerts" parent="Theme.AppCompat.NoActionBar">
+		<item name="android:statusBarColor">#07090D</item>
+		<item name="android:navigationBarColor">#07090D</item>
+		<item name="android:windowBackground">#07090D</item>
+		<item name="android:colorPrimary">#FF2D3B</item>
+	</style>
+</resources>

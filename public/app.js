@@ -72,7 +72,8 @@ userInput.addEventListener("keydown", (event) => {
 sendButton.addEventListener("click", sendMessage);
 
 function apiUrl(path) {
-	const url = new URL(path, window.location.origin);
+	const origin = window.TSUNAMI_API_BASE || window.location.origin;
+	const url = new URL(path, origin.endsWith("/") ? origin : `${origin}/`);
 	if (previewMode) url.searchParams.set("preview", "1");
 	return url.toString();
 }

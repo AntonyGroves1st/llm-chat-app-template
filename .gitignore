@@ -197,3 +197,17 @@ dist
 !.env.example
 .dev.vars*
 !.dev.vars.example
+
+### Android APK builder ###
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.sdk/
+android/app/src/main/assets/*
+!android/app/src/main/assets/.gitkeep
+android/keystore/*.jks
+android/keystore/*.keystore
+artifacts/*.apk
+artifacts/*.aab
+.idea/

@@ -41,6 +41,22 @@ Preview the red-alert screen even when no warning is active:
 | `GET /api/feed` | Full snapshot used by the dashboard |
 | `POST /api/chat` | Streaming safety assistant |
 
+## Android APK
+
+Full APK builder (downloads the Android SDK if needed):
+
+```bash
+npm run apk
+```
+
+On Windows:
+
+```bat
+Build-Tsunami-APK.bat
+```
+
+The APK is written to `artifacts/TsunamiRedAlerts-debug.apk`. See [ANDROID.md](ANDROID.md) for Android Studio, signing, and release builds.
+
 ## Deploy
 
 ```bash
