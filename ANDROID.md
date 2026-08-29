@@ -10,6 +10,17 @@ This repo includes a full Android package and a one-command APK builder. The APK
 Build-Tsunami-APK.bat
 ```
 
+The builder looks for **JDK 21** first, including the `Java\latest\jdk-21` folder (the one that contains `bin\`, `lib\`, and `javac.exe`). That is the folder to use.
+
+Do **not** set `JAVA_HOME` to the nested `jdk-25.0.2.10-hotspot` directory. Gradle 8.7 in this project runs on JDK 17–22. If detection fails:
+
+```bat
+set JAVA_HOME=C:\Program Files\Java\latest\jdk-21
+Build-Tsunami-APK.bat
+```
+
+Use your real path if `Java\latest\jdk-21` lives on another drive.
+
 ### Linux / macOS / this repo
 
 ```bash
@@ -36,7 +47,7 @@ artifacts/TsunamiRedAlerts-debug.apk
 
 The builder will:
 
-1. Use JDK 17+ (`java` on PATH)
+1. Use JDK 17–22, preferring `Java\latest\jdk-21`
 2. Download Android command-line tools into `android/.sdk` if no SDK is installed
 3. Accept SDK licenses and install `android-34` + build-tools
 4. Copy `public/` into the Android assets folder
