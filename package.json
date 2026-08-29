@@ -1,6 +1,6 @@
 {
-	"name": "llm-chat-app-template",
-	"description": "A simple chat application powered by Cloudflare Workers AI",
+	"name": "tsunami-red-alerts",
+	"description": "Tsunami red-alert dashboard with official NWS, USGS, and news APIs",
 	"cloudflare": {
 		"label": "LLM Chat App",
 		"products": [
