@@ -217,12 +217,34 @@ export function mapTsunamiCenterAlerts(
 	});
 }
 
+export function isHazardNews(title: string, summary: string): boolean {
+	const text = `${title} ${summary}`.toLowerCase();
+	if (
+		/\b(orange|blue|red|pink|political|electoral|election)\s+tsunami\b/.test(
+			text,
+		) ||
+		/\b(vote|election|campaign|party|one nation)\b/.test(text)
+	) {
+		return false;
+	}
+	return (
+		/\btsunami warning\b|\btsunami watch\b|\btsunami advisory\b|\btsunami.gov\b/.test(
+			text,
+		) ||
+		(/\btsunami\b/.test(text) &&
+			/\b(earthquake|seismic|coast|evacuat|wave|pacific|warning|noaa|usgs|bulletin)\b/.test(
+				text,
+			)) ||
+		(/\btsunami\b/.test(text) && !/\b(metaphor|landslide victory)\b/.test(text))
+	);
+}
+
 export function mapNewsItems(xml: string, source: string): NewsItem[] {
 	const entries = xml.includes("<entry")
 		? parseAtomEntries(xml)
 		: parseRssItems(xml);
 	return entries
-		.filter((entry) => /tsunami|earthquake|seismic/i.test(`${entry.title} ${entry.summary}`))
+		.filter((entry) => isHazardNews(entry.title, entry.summary))
 		.map((entry) => ({
 			id: stableId(["news", source, entry.id || entry.title]),
 			source,

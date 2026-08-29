@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assembleSnapshot } from "../src/feeds";
+import { assembleSnapshot, isHazardNews } from "../src/feeds";
 import {
 	computeStatus,
 	earthquakeLevel,
@@ -69,6 +69,23 @@ describe("threat ranking", () => {
 		const status = computeStatus([], []);
 		expect(status.redAlert).toBe(false);
 		expect(status.level).toBe("none");
+	});
+});
+
+describe("news topic filter", () => {
+	it("keeps tsunami hazard reporting and drops political metaphors", () => {
+		expect(
+			isHazardNews(
+				"Pacific tsunami warning canceled after offshore quake",
+				"Coastal towns stood down",
+			),
+		).toBe(true);
+		expect(
+			isHazardNews(
+				"'Orange tsunami': One Nation claims historic victory",
+				"Election night coverage",
+			),
+		).toBe(false);
 	});
 });
 
