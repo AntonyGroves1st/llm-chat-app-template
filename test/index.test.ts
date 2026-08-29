@@ -1,4 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
+import {
+	consumeSseEvents,
+	extractAssistantDelta,
+} from "../public/chat-sse.js";
 import worker from "../src/index";
 import { Env } from "../src/types";
 
@@ -140,7 +144,14 @@ describe("worker fetch", () => {
 
 		expect(response.status).toBe(200);
 		expect(response.headers.get("content-type")).toContain("text/event-stream");
-		expect(await response.text()).toContain("Hello");
+		const raw = await response.text();
+		expect(raw).toContain("Hello");
+		const parsed = consumeSseEvents(raw.endsWith("\n\n") ? raw : `${raw}\n\n`);
+		const text = parsed.events
+			.filter((event) => event !== "[DONE]")
+			.map((event) => extractAssistantDelta(event))
+			.join("");
+		expect(text).toBe("Hello");
 		expect(run).toHaveBeenCalledOnce();
 	});
 
@@ -148,22 +159,27 @@ describe("worker fetch", () => {
 		const run = vi.fn(async () => {
 			throw new Error("model down");
 		});
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-		const response = await worker.fetch(
-			new Request("https://example.com/api/chat", {
-				method: "POST",
-				headers: { "content-type": "application/json" },
-				body: JSON.stringify({
-					messages: [{ role: "user", content: "Hi there" }],
+		try {
+			const response = await worker.fetch(
+				new Request("https://example.com/api/chat", {
+					method: "POST",
+					headers: { "content-type": "application/json" },
+					body: JSON.stringify({
+						messages: [{ role: "user", content: "Hi there" }],
+					}),
 				}),
-			}),
-			createEnv(run as unknown as Env["AI"]["run"]),
-			createExecutionContext(),
-		);
+				createEnv(run as unknown as Env["AI"]["run"]),
+				createExecutionContext(),
+			);
 
-		expect(response.status).toBe(500);
-		expect(await response.json()).toEqual({
-			error: "Failed to process request",
-		});
+			expect(response.status).toBe(500);
+			expect(await response.json()).toEqual({
+				error: "Failed to process request",
+			});
+		} finally {
+			errorSpy.mockRestore();
+		}
 	});
 });

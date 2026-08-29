@@ -16,8 +16,14 @@ export class RequestValidationError extends Error {
 	}
 }
 
+type AllowedRole = (typeof ALLOWED_ROLES)[number];
+
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null;
+}
+
+function isAllowedRole(role: unknown): role is AllowedRole {
+	return (ALLOWED_ROLES as readonly string[]).includes(role as string);
 }
 
 /**
@@ -43,11 +49,7 @@ export function normalizeChatMessages(input: unknown): ChatMessage[] {
 		const role = item.role;
 		const content = item.content;
 
-		if (
-			role !== "system" &&
-			role !== "user" &&
-			role !== "assistant"
-		) {
+		if (!isAllowedRole(role)) {
 			continue;
 		}
 

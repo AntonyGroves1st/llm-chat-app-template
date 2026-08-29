@@ -27,6 +27,25 @@ describe("consumeSseEvents", () => {
 		const parsed = consumeSseEvents('data: {"response":"Hi"}\r\n\r\n');
 		expect(parsed.events).toEqual(['{"response":"Hi"}']);
 	});
+
+	it("reassembles chunks split across TCP reads like the chat UI does", () => {
+		const chunks = ['data: {"res', 'ponse":"Hel"}\n\ndata: {"response":"lo"}\n', "\n"];
+		let buffer = "";
+		let text = "";
+
+		for (const chunk of chunks) {
+			buffer += chunk;
+			const parsed = consumeSseEvents(buffer);
+			buffer = parsed.buffer;
+			for (const data of parsed.events) {
+				if (data === "[DONE]") continue;
+				text += extractAssistantDelta(data);
+			}
+		}
+
+		expect(text).toBe("Hello");
+		expect(buffer).toBe("");
+	});
 });
 
 describe("extractAssistantDelta", () => {
