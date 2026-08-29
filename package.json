@@ -1,6 +1,6 @@
 {
-	"name": "llm-chat-app-template",
-	"description": "A simple chat application powered by Cloudflare Workers AI",
+	"name": "tsunami-red-alerts",
+	"description": "Tsunami red-alert dashboard with official NWS, USGS, and news APIs",
 	"cloudflare": {
 		"label": "LLM Chat App",
 		"products": [
@@ -33,6 +33,9 @@
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"test": "vitest"
+		"test": "vitest",
+		"apk": "bash scripts/build-apk.sh",
+		"apk:release": "bash scripts/build-apk.sh --release",
+		"apk:sync": "bash scripts/sync-android-assets.sh"
 	}
 }

@@ -1,0 +1,10 @@
+INSTALL PATH (not inside race1):
+
+    G:\Tsunami-Red-Alerts
+
+1. Copy this whole Tsunami-Red-Alerts folder to the root of G:\
+2. You should have G:\Tsunami-Red-Alerts\Start-App.bat
+3. Do not put it in G:\race1\
+
+Then double-click Start-App.bat
+Or double-click Build-Tsunami-APK.bat to make the APK.
