@@ -7,6 +7,11 @@
  *
  * @license MIT
  */
+import {
+	normalizeChatMessages,
+	RequestValidationError,
+	requireUserMessage,
+} from "./messages";
 import { Env, ChatMessage } from "./types";
 
 // Model ID for Workers AI model
@@ -24,27 +29,28 @@ export default {
 	async fetch(
 		request: Request,
 		env: Env,
-		ctx: ExecutionContext,
+		_ctx: ExecutionContext,
 	): Promise<Response> {
 		const url = new URL(request.url);
+		const pathname = url.pathname.replace(/\/+$/, "") || "/";
 
 		// Handle static assets (frontend)
-		if (url.pathname === "/" || !url.pathname.startsWith("/api/")) {
+		if (pathname === "/" || !pathname.startsWith("/api/")) {
 			return env.ASSETS.fetch(request);
 		}
 
 		// API Routes
-		if (url.pathname === "/api/chat") {
-			// Handle POST requests for chat
+		if (pathname === "/api/chat") {
 			if (request.method === "POST") {
 				return handleChatRequest(request, env);
 			}
 
-			// Method not allowed for other request types
-			return new Response("Method not allowed", { status: 405 });
+			return new Response("Method not allowed", {
+				status: 405,
+				headers: { allow: "POST" },
+			});
 		}
 
-		// Handle 404 for unmatched routes
 		return new Response("Not found", { status: 404 });
 	},
 } satisfies ExportedHandler<Env>;
@@ -57,13 +63,21 @@ async function handleChatRequest(
 	env: Env,
 ): Promise<Response> {
 	try {
-		// Parse JSON request body
-		const { messages = [] } = (await request.json()) as {
-			messages: ChatMessage[];
-		};
+		let body: unknown;
+		try {
+			body = await request.json();
+		} catch {
+			throw new RequestValidationError("Invalid JSON body");
+		}
 
-		// Add system prompt if not present
-		if (!messages.some((msg) => msg.role === "system")) {
+		const payload = body && typeof body === "object" ? body : {};
+		const messages = normalizeChatMessages(
+			"messages" in payload ? (payload as { messages: unknown }).messages : [],
+		);
+
+		requireUserMessage(messages);
+
+		if (!messages.some((msg: ChatMessage) => msg.role === "system")) {
 			messages.unshift({ role: "system", content: SYSTEM_PROMPT });
 		}
 
@@ -86,10 +100,16 @@ async function handleChatRequest(
 			headers: {
 				"content-type": "text/event-stream; charset=utf-8",
 				"cache-control": "no-cache",
-				connection: "keep-alive",
 			},
 		});
 	} catch (error) {
+		if (error instanceof RequestValidationError) {
+			return new Response(JSON.stringify({ error: error.message }), {
+				status: error.status,
+				headers: { "content-type": "application/json" },
+			});
+		}
+
 		console.error("Error processing chat request:", error);
 		return new Response(
 			JSON.stringify({ error: "Failed to process request" }),
